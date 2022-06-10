@@ -2,6 +2,7 @@ const { MongoClient } = require("mongodb");
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
+const cors = require('cors');
 require("dotenv").config();
 
 // Client
