@@ -14,6 +14,7 @@ const DBNAME = process.env.DBNAME;
 // Middleware
 app.use(express.static("public"));
 app.use(bodyParser.json());
+app.use(cors());
 
 app.get("/", (req, res) => {
     res.status(300).redirect("/index.html");
