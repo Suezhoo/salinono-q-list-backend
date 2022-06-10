@@ -29,8 +29,8 @@ app.get("/queuers", async (req, res) => {
         res.status(200).send(queuers);
     } catch (e) {
         res.status(500).send({
-            error: "Could not retrieve all queuers",
-            value: e,
+            error: e.message,
+            value: e.value,
         });
     } finally {
         await CLIENT.close();
