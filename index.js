@@ -2,11 +2,11 @@ const { MongoClient } = require("mongodb");
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
-const cors = require('cors');
+const cors = require("cors");
 require("dotenv").config();
 
 // Client
-const CLIENT = new MongoClient(process.env.URL);
+const CLIENT = new MongoClient(process.env.FINAL_URL);
 
 // DB To use
 const DBNAME = process.env.DBNAME;
