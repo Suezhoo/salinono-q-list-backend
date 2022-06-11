@@ -3,6 +3,8 @@ const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const cookie = require("cookie");
+const http = require("http");
 require("dotenv").config();
 
 // Client
@@ -123,6 +125,7 @@ app.put("/queuers/edit", async (req, res) => {
     }
 });
 
+// Remove someone from queue (sali only)
 app.delete("/queuers/:name", async (req, res) => {
     try {
         await CLIENT.connect();
@@ -133,6 +136,34 @@ app.delete("/queuers/:name", async (req, res) => {
             res.status(200).send({ message: `Person with twitch name ${req.query.name} successfully removed from queue.` });
         } else {
             res.status(404).send({ message: `No person found. Deleted 0 persons` });
+        }
+    } catch (e) {
+        res.status(500).send({
+            error: e.name,
+            value: e.message,
+        });
+    } finally {
+        await CLIENT.close();
+    }
+});
+
+// Clear queuers (sali only)
+
+// Remove self from queue
+
+// Authorize Sali
+app.post("/authorize", async (req, res) => {
+    try {
+        if (req.body.username == process.env.USERNAME && req.body.password == process.env.PASSWORD) {
+            res.setHeader("Set-Cookie", cookie.serialize("isAdmin", true), {
+                httpOnly: true,
+                maxAge: 60 * 60 * 24 * 7, // 1 week
+            });
+            // Redirect back after setting cookie
+            res.statusCode(302)
+                .setHeader("Location", req.headers.referer || "/")
+                .end();
+            return;
         }
     } catch (e) {
         res.status(500).send({
