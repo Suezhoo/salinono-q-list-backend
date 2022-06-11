@@ -86,7 +86,7 @@ app.get("/remove", async (req, res) => {
                 res.status(200).send(`${name} left the queue.`);
             }
         } else {
-            res.status(404).send(`${name}, you're not in queue. Type !join to join the queue`);
+            res.status(200).send(`${name}, you're not in queue. Type !join to join the queue`);
         }
     } catch (e) {
         res.status(500).send({
