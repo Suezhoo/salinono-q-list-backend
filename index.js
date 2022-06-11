@@ -82,9 +82,9 @@ app.get("/remove", async (req, res) => {
         const deleteQueuer = await col.findOne({ name });
         const deletedQueuer = await col.deleteOne(deleteQueuer);
         if (deletedQueuer.deletedCount === 1) {
-            res.status(200).send({ message: `Person with twitch name ${req.query.name} successfully removed from queue.` });
+            res.status(200).send(`${name} left the queue.`);
         } else {
-            res.status(404).send({ message: `No person found. Deleted 0 persons` });
+            res.status(404).send(`${name}, you're not in queue. Type !join to join the queue`);
         }
     } catch (e) {
         res.status(500).send({
