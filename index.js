@@ -59,7 +59,7 @@ app.get("/join", async (req, res) => {
             // Save and send back success message
             await col.insertOne(queuer);
 
-            res.status(200).send(`${name} joined to the queue.`);
+            res.status(200).send(`${name} joined the queue.`);
         }
     } catch (e) {
         res.status(500).send({
@@ -84,9 +84,9 @@ app.get("/remove", async (req, res) => {
             const deletedQueuer = await col.deleteOne(deleteQueuer);
             if (deletedQueuer.deletedCount === 1) {
                 res.status(200).send(`${name} left the queue.`);
-            } else {
-                res.status(404).send(`${name}, you're not in queue. Type !join to join the queue`);
             }
+        } else {
+            res.status(404).send(`${name}, you're not in queue. Type !join to join the queue`);
         }
     } catch (e) {
         res.status(500).send({
