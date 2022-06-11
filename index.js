@@ -20,7 +20,7 @@ app.use(cors());
 
 app.get("/twitch", async (req, res) => {
     try {
-        CLIENT.connect();
+        await CLIENT.connect();
         const col = CLIENT.db(DBNAME).collection("queuers");
 
         const name = req.query.name;
