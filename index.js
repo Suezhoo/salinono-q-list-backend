@@ -21,8 +21,23 @@ app.use(cors());
 app.get("/twitch", async (req, res) => {
     try {
         CLIENT.connect();
-        console.log(req.query.name);
-        res.status(200).send(`${req.query.name} added to the queue`);
+        const col = CLIENT.db(DBNAME).collection("queuers");
+
+        const name = req.query.name;
+
+        // Check for double queuers
+        const checkDouble = await col.findOne({ name });
+        if (checkDouble) {
+            res.status(200).send(`${name}, you are already in queue`).end();
+        } else {
+            // Creating the queuer
+            let queuer = { name };
+
+            // Save and send back success message
+            await col.insertOne(queuer);
+
+            res.status(200).send(`${name} added to the queue`);
+        }
     } catch (e) {
         res.status(500).send({
             error: e.name,
