@@ -22,6 +22,7 @@ app.get("/", (req, res) => {
     res.status(300).redirect("/index.html");
 });
 
+// Get everyone in queue
 app.get("/queuers", async (req, res) => {
     try {
         await CLIENT.connect();
@@ -39,6 +40,7 @@ app.get("/queuers", async (req, res) => {
     }
 });
 
+// Join queue
 app.get("/join", async (req, res) => {
     try {
         await CLIENT.connect();
@@ -69,8 +71,8 @@ app.get("/join", async (req, res) => {
     }
 });
 
-// Remove someone from queue (sali only)
-app.delete("/remove", async (req, res) => {
+// Remove from queue
+app.get("/remove", async (req, res) => {
     try {
         await CLIENT.connect();
 
