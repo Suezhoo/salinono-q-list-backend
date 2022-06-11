@@ -51,7 +51,7 @@ app.get("/join", async (req, res) => {
         // Check for double queuers
         const checkDouble = await col.findOne({ name });
         if (checkDouble) {
-            res.status(200).send(`${name}, you are already in queue`).end();
+            res.status(200).send(`${name}, you are already in queue.`).end();
         } else {
             // Creating the queuer
             let queuer = { name };
@@ -86,7 +86,7 @@ app.get("/remove", async (req, res) => {
                 res.status(200).send(`${name} left the queue.`);
             }
         } else {
-            res.status(200).send(`${name}, you're not in queue. Type !join to join the queue`);
+            res.status(200).send(`${name}, you're not in queue. Type !join to join the queue.`);
         }
     } catch (e) {
         res.status(500).send({
