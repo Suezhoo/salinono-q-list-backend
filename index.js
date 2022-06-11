@@ -18,6 +18,21 @@ app.use(express.static("public"));
 app.use(bodyParser.json());
 app.use(cors());
 
+app.get("/twitch", async (req, res) => {
+    try {
+        CLIENT.connect();
+        console.log(req.query.name);
+        res.status(200).send("OK");
+    } catch (e) {
+        res.status(500).send({
+            error: e.name,
+            value: e.message,
+        });
+    } finally {
+        await CLIENT.close();
+    }
+});
+
 app.get("/", (req, res) => {
     res.status(300).redirect("/index.html");
 });
