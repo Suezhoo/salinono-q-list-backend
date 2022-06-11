@@ -22,7 +22,7 @@ app.get("/twitch", async (req, res) => {
     try {
         CLIENT.connect();
         console.log(req.query.name);
-        res.status(200).send("OK");
+        res.status(200).send(`${req.query.name} added to the queue`);
     } catch (e) {
         res.status(500).send({
             error: e.name,
