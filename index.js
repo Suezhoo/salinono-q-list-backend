@@ -22,7 +22,30 @@ app.get("/", (req, res) => {
     res.status(300).redirect("/index.html");
 });
 
-// Get everyone in queue
+// Get everyone in queue for twitch (text)
+app.get("/queuers/twitch", async (req, res) => {
+    try {
+        await CLIENT.connect();
+        const col = CLIENT.db(DBNAME).collection("queuers");
+        const queuers = await col.find({}).toArray();
+
+        let string = "";
+        queuers.forEach((e) => {
+            string += `${e.name}, `;
+        });
+
+        res.status(200).send(string.slice(0, -2));
+    } catch (e) {
+        res.status(500).send({
+            error: e.message,
+            value: e.value,
+        });
+    } finally {
+        await CLIENT.close();
+    }
+});
+
+// Get everyone in queue (array)
 app.get("/queuers", async (req, res) => {
     try {
         await CLIENT.connect();
