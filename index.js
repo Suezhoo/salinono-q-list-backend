@@ -22,6 +22,9 @@ app.get("/", (req, res) => {
     res.status(300).redirect("/index.html");
 });
 
+// Queue status
+let queue_isOpen = false;
+
 // Get everyone in queue for twitch (text)
 app.get("/queuers/twitch", async (req, res) => {
     try {
@@ -66,10 +69,16 @@ app.get("/queuers", async (req, res) => {
 // Join queue
 app.get("/join", async (req, res) => {
     try {
+        const name = req.query.name;
+
+        // Check queue status -> closed = abort
+        if (!queue_isOpen) {
+            res.status(200).send(`${name}, queue is currently closed .`);
+            return;
+        }
+
         await CLIENT.connect();
         const col = CLIENT.db(DBNAME).collection("queuers");
-
-        const name = req.query.name;
 
         // Check for double queuers
         const checkDouble = await col.findOne({ name });
@@ -119,6 +128,35 @@ app.get("/remove", async (req, res) => {
     } finally {
         await CLIENT.close();
     }
+});
+
+// Clear queue
+app.get("/clear", async (req, res) => {
+    try {
+        await CLIENT.connect();
+        const col = CLIENT.db(DBNAME).collection("queuers");
+        const deleted = await col.deleteMany({});
+        res.status(200).send("Queue cleared.");
+    } catch (e) {
+        res.status(500).send({
+            error: e.name,
+            value: e.message,
+        });
+    } finally {
+        await CLIENT.close();
+    }
+});
+
+// Open queue
+app.get("/open", async (req, res) => {
+    queue_isOpen = true;
+    res.status(200).send("Queue is open.");
+});
+
+// Close queue
+app.get("/close", async (req, res) => {
+    queue_isOpen = false;
+    res.status(200).send("Queue is closed.");
 });
 
 app.listen(process.env.PORT, () => {
