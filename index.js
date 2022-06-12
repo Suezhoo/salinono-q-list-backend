@@ -159,6 +159,11 @@ app.get("/close", async (req, res) => {
     res.status(200).send("Queue is closed.");
 });
 
+// Get queue status
+app.get("/queue/status", async (req, res) => {
+    res.status(200).send(queue_isOpen);
+});
+
 app.listen(process.env.PORT, () => {
     console.log(`Listening on port ${process.env.PORT}`);
 });
