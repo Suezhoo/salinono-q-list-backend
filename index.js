@@ -5,6 +5,8 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const cookie = require("cookie");
 const http = require("http");
+const e = require("express");
+const { response } = require("express");
 require("dotenv").config();
 
 // Client
@@ -73,7 +75,7 @@ app.get("/join", async (req, res) => {
 
         // Check queue status -> closed = abort
         if (!queue_isOpen) {
-            res.status(200).send(`${name}, queue is currently closed .`);
+            res.status(200).send(`${name}, queue is currently closed.`);
             return;
         }
 
@@ -162,6 +164,31 @@ app.get("/close", async (req, res) => {
 // Get queue status
 app.get("/queue/status", async (req, res) => {
     res.status(200).send(queue_isOpen);
+});
+
+// Next turn -> get rid of the 1st and 2nd in queue
+app.get("/queue/next-turn", async (req, res) => {
+    try {
+        await CLIENT.connect();
+        const col = CLIENT.db(DBNAME).collection("queuers");
+        // Get first 2 queuers
+        const limit = 2;
+        const queuers = await col.find({}).limit(limit).toArray();
+        // Delete queuers
+        let responseString = "";
+        for (let i = 0; i < limit; i++) {
+            await col.deleteOne(queuers[i]);
+            responseString += `"${queuers[i].name}", `;
+        }
+        res.status(200).send(`Removed people with twitch names: ${responseString}from queue.`);
+    } catch (e) {
+        res.status(500).send({
+            error: e.name,
+            value: e.message,
+        });
+    } finally {
+        await CLIENT.close();
+    }
 });
 
 app.listen(process.env.PORT, () => {
