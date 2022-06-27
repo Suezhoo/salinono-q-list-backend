@@ -34,12 +34,16 @@ app.get("/queuers/twitch", async (req, res) => {
         const col = CLIENT.db(DBNAME).collection("queuers");
         const queuers = await col.find({}).toArray();
 
-        let string = "";
-        queuers.forEach((e) => {
-            string += `${e.name}, `;
-        });
+        if (queuers.length != 0) {
+            let string = "";
+            queuers.forEach((e) => {
+                string += `${e.name}, `;
+            });
 
-        res.status(200).send(string.slice(0, -2));
+            res.status(200).send(string.slice(0, -2));
+        } else {
+            res.status(200).send("There is currently no one in queue.");
+        }
     } catch (e) {
         res.status(500).send({
             error: e.message,
